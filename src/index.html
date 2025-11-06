@@ -11,57 +11,7 @@
     <meta name="apple-mobile-web-app-title" content="Differ" />
     <link rel="manifest" href="/site.webmanifest" />
     <title>Diff Editor</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        #controls {
-            padding: 10px;
-            background-color: #f0f0f0;
-            border-bottom: 1px solid #ccc;
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        #language-selector,
-        #theme-selector {
-            padding: 5px 10px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        #container {
-            height: calc(100vh - 100px);
-        }
-
-        #footer {
-            padding: 10px 20px;
-            background-color: #f0f0f0;
-            border-top: 1px solid #ccc;
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-        }
-
-            #footer a {
-                color: #0066cc;
-                text-decoration: none;
-            }
-
-                #footer a:hover {
-                    text-decoration: underline;
-                }
-    </style>
+    <link rel="stylesheet" href="/css/styles.css" />
 </head>
 
 <body>
@@ -92,6 +42,7 @@
                 <option value="system" selected>System</option>
             </select>
         </div>
+        <button id="clear-session-btn" title="Clear saved session and reset to default">Clear Saved Session</button>
     </div>
     <div id="container"></div>
     <div id="footer">
