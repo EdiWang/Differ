@@ -1,152 +1,19 @@
-import * as monaco from 'monaco-editor';
-import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
-import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker';
-import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker';
-import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
-import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
+import { configureMonacoWorkers } from './workers.js';
+import { leftText, rightText } from './sampleData.js';
+import { applyTheme, setupThemeListeners } from './theme.js';
+import { setupLanguageSelector } from './language.js';
+import { createDiffEditor, initializeDiffEditor } from './editor.js';
 
 // Configure Monaco Environment for web workers
-self.MonacoEnvironment = {
-    getWorker(_, label) {
-        if (label === 'json') {
-            return new jsonWorker();
-        }
-        if (label === 'css' || label === 'scss' || label === 'less') {
-            return new cssWorker();
-        }
-        if (label === 'html' || label === 'handlebars' || label === 'razor') {
-            return new htmlWorker();
-        }
-        if (label === 'typescript' || label === 'javascript') {
-            return new tsWorker();
-        }
-        return new editorWorker();
-    }
-};
+configureMonacoWorkers();
 
-const leftText = `Flora
-
-In gardens where the flowers bloom,
-There walks a soul that light the room.
-Flora, with grace like morning dew,
-Each moment spent feels bright and new.
-
-Her laughter dances on the breeze,
-As gentle as the swaying trees.`;
-
-const rightText = `Flora
-
-In gardens where the flowers bloom,
-There walks a soul that lights the room.
-Flora, with grace like morning dew,
-Each moment spent feels bright and new.
-
-Her laughter dances on the breeze,
-As gentle as the swaying trees.
-Her smile, a sun that warms the day,
-In her presence, worries fade away.
-
-Like petals soft, her kindness shows,
-A beauty that forever grows.`;
-
-// Function to get system theme preference
-function getSystemTheme() {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'vs-dark' : 'vs';
-}
-
-// Function to apply theme based on selection
-function applyTheme(themeSelection) {
-    let actualTheme;
-
-    if (themeSelection === 'system') {
-        actualTheme = getSystemTheme();
-    } else {
-        actualTheme = themeSelection;
-    }
-
-    monaco.editor.setTheme(actualTheme);
-
-    // Update controls background to match theme
-    const controls = document.getElementById('controls');
-    const languageSelector = document.getElementById('language-selector');
-    const themeSelector = document.getElementById('theme-selector');
-    
-    if (actualTheme === 'vs-dark') {
-        controls.style.backgroundColor = '#1e1e1e';
-        controls.style.borderBottomColor = '#3e3e3e';
-        controls.style.color = '#cccccc';
-        
-        // Style dropdowns for dark theme
-        [languageSelector, themeSelector].forEach(selector => {
-            selector.style.backgroundColor = '#3c3c3c';
-            selector.style.color = '#cccccc';
-            selector.style.border = '1px solid #3e3e3e';
-        });
-    } else {
-        controls.style.backgroundColor = '#f0f0f0';
-        controls.style.borderBottomColor = '#ccc';
-        controls.style.color = '#000000';
-        
-        // Style dropdowns for light theme
-        [languageSelector, themeSelector].forEach(selector => {
-            selector.style.backgroundColor = '#ffffff';
-            selector.style.color = '#000000';
-            selector.style.border = '1px solid #ccc';
-        });
-    }
-}
-
-const diffEditor = monaco.editor.createDiffEditor(document.getElementById('container'), {
-    enableSplitViewResizing: true,
-    renderSideBySide: true,
-    readOnly: false,
-    originalEditable: true,
-    automaticLayout: true
-});
-
-// Initialize with plain text language
-diffEditor.setModel({
-    original: monaco.editor.createModel(leftText, 'plaintext'),
-    modified: monaco.editor.createModel(rightText, 'plaintext')
-});
+// Create and initialize the diff editor
+const diffEditor = createDiffEditor('container');
+initializeDiffEditor(diffEditor, leftText, rightText, 'plaintext');
 
 // Apply initial theme (system)
 applyTheme('system');
 
-// Add language selector event listener
-const languageSelector = document.getElementById('language-selector');
-languageSelector.addEventListener('change', (event) => {
-    const selectedLanguage = event.target.value;
-
-    // Get current content from both editors
-    const originalModel = diffEditor.getOriginalEditor().getModel();
-    const modifiedModel = diffEditor.getModifiedEditor().getModel();
-    const originalContent = originalModel.getValue();
-    const modifiedContent = modifiedModel.getValue();
-
-    // Create new models with the selected language
-    diffEditor.setModel({
-        original: monaco.editor.createModel(originalContent, selectedLanguage),
-        modified: monaco.editor.createModel(modifiedContent, selectedLanguage)
-    });
-
-    // Dispose old models to prevent memory leaks
-    originalModel.dispose();
-    modifiedModel.dispose();
-});
-
-// Add theme selector event listener
-const themeSelector = document.getElementById('theme-selector');
-themeSelector.addEventListener('change', (event) => {
-    const selectedTheme = event.target.value;
-    applyTheme(selectedTheme);
-});
-
-// Listen for system theme changes when 'system' is selected
-const systemThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-systemThemeMediaQuery.addEventListener('change', (event) => {
-    // Only apply system theme change if user has 'system' selected
-    if (themeSelector.value === 'system') {
-        applyTheme('system');
-    }
-});
+// Setup event listeners
+setupLanguageSelector(diffEditor);
+setupThemeListeners(diffEditor);
