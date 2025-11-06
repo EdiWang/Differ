@@ -4,6 +4,7 @@ import { applyTheme, setupThemeListeners } from './theme.js';
 import { setupLanguageSelector } from './language.js';
 import { createDiffEditor, initializeDiffEditor } from './editor.js';
 import { loadSession, saveSession, setupAutoSave, clearSession } from './storage.js';
+import { setupViewModeSelector, applyViewMode } from './viewMode.js';
 
 // Configure Monaco Environment for web workers
 configureMonacoWorkers();
@@ -39,6 +40,15 @@ if (savedSession) {
             languageSelector.value = savedSession.language;
         }
     }
+    
+    // Apply saved view mode
+    if (savedSession.viewMode) {
+        applyViewMode(diffEditor, savedSession.viewMode);
+        const viewModeSelector = document.getElementById('view-mode-selector');
+        if (viewModeSelector) {
+            viewModeSelector.value = savedSession.viewMode;
+        }
+    }
 } else {
     initializeDiffEditor(diffEditor, leftText, rightText, 'plaintext');
     applyTheme('system');
@@ -47,6 +57,7 @@ if (savedSession) {
 // Setup event listeners
 setupLanguageSelector(diffEditor);
 setupThemeListeners(diffEditor);
+setupViewModeSelector(diffEditor);
 
 // Helper functions to get current state
 const getCurrentLanguage = () => {
@@ -59,16 +70,25 @@ const getCurrentTheme = () => {
     return selector ? selector.value : 'system';
 };
 
-// Setup auto-save with 2 second debounce
-setupAutoSave(diffEditor, getCurrentLanguage, getCurrentTheme, 2000);
+const getCurrentViewMode = () => {
+    const selector = document.getElementById('view-mode-selector');
+    return selector ? selector.value : 'side-by-side';
+};
 
-// Manual save on language/theme change
+// Setup auto-save with 2 second debounce
+setupAutoSave(diffEditor, getCurrentLanguage, getCurrentTheme, getCurrentViewMode, 2000);
+
+// Manual save on language/theme/view mode change
 document.getElementById('language-selector')?.addEventListener('change', () => {
-    saveSession(diffEditor, getCurrentLanguage(), getCurrentTheme());
+    saveSession(diffEditor, getCurrentLanguage(), getCurrentTheme(), getCurrentViewMode());
 });
 
 document.getElementById('theme-selector')?.addEventListener('change', () => {
-    saveSession(diffEditor, getCurrentLanguage(), getCurrentTheme());
+    saveSession(diffEditor, getCurrentLanguage(), getCurrentTheme(), getCurrentViewMode());
+});
+
+document.getElementById('view-mode-selector')?.addEventListener('change', () => {
+    saveSession(diffEditor, getCurrentLanguage(), getCurrentTheme(), getCurrentViewMode());
 });
 
 // Clear session button handler
@@ -91,7 +111,13 @@ document.getElementById('clear-session-btn')?.addEventListener('click', () => {
             themeSelector.value = 'system';
         }
         
-        // Apply system theme
+        const viewModeSelector = document.getElementById('view-mode-selector');
+        if (viewModeSelector) {
+            viewModeSelector.value = 'side-by-side';
+        }
+        
+        // Apply system theme and side-by-side view
         applyTheme('system');
+        applyViewMode(diffEditor, 'side-by-side');
     }
 });

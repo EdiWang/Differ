@@ -20,6 +20,7 @@ export function applyTheme(themeSelection) {
     const footer = document.getElementById('footer');
     const languageSelector = document.getElementById('language-selector');
     const themeSelector = document.getElementById('theme-selector');
+    const viewModeSelector = document.getElementById('view-mode-selector');
     
     if (actualTheme === 'vs-dark') {
         // Controls bar styling
@@ -39,10 +40,12 @@ export function applyTheme(themeSelection) {
         });
         
         // Style dropdowns for dark theme
-        [languageSelector, themeSelector].forEach(selector => {
-            selector.style.backgroundColor = '#3c3c3c';
-            selector.style.color = '#cccccc';
-            selector.style.border = '1px solid #3e3e3e';
+        [languageSelector, themeSelector, viewModeSelector].forEach(selector => {
+            if (selector) {
+                selector.style.backgroundColor = '#3c3c3c';
+                selector.style.color = '#cccccc';
+                selector.style.border = '1px solid #3e3e3e';
+            }
         });
     } else {
         // Controls bar styling
@@ -62,10 +65,12 @@ export function applyTheme(themeSelection) {
         });
         
         // Style dropdowns for light theme
-        [languageSelector, themeSelector].forEach(selector => {
-            selector.style.backgroundColor = '#ffffff';
-            selector.style.color = '#000000';
-            selector.style.border = '1px solid #ccc';
+        [languageSelector, themeSelector, viewModeSelector].forEach(selector => {
+            if (selector) {
+                selector.style.backgroundColor = '#ffffff';
+                selector.style.color = '#000000';
+                selector.style.border = '1px solid #ccc';
+            }
         });
     }
 }

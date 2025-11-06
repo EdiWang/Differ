@@ -1,6 +1,6 @@
 const STORAGE_KEY = 'differ-session';
 
-export function saveSession(diffEditor, language, theme) {
+export function saveSession(diffEditor, language, theme, viewMode = 'side-by-side') {
     try {
         const models = diffEditor.getModel();
         if (!models) return;
@@ -10,6 +10,7 @@ export function saveSession(diffEditor, language, theme) {
             modifiedText: models.modified.getValue(),
             language: language,
             theme: theme,
+            viewMode: viewMode,
             timestamp: new Date().toISOString()
         };
 
@@ -39,7 +40,7 @@ export function clearSession() {
     }
 }
 
-export function setupAutoSave(diffEditor, getLanguage, getTheme, interval = 2000) {
+export function setupAutoSave(diffEditor, getLanguage, getTheme, getViewMode, interval = 2000) {
     // Save on content change with debouncing
     let saveTimeout;
     const debouncedSave = () => {
@@ -47,7 +48,8 @@ export function setupAutoSave(diffEditor, getLanguage, getTheme, interval = 2000
         saveTimeout = setTimeout(() => {
             const language = getLanguage();
             const theme = getTheme();
-            saveSession(diffEditor, language, theme);
+            const viewMode = getViewMode();
+            saveSession(diffEditor, language, theme, viewMode);
         }, interval);
     };
 
@@ -62,7 +64,8 @@ export function setupAutoSave(diffEditor, getLanguage, getTheme, interval = 2000
     window.addEventListener('beforeunload', () => {
         const language = getLanguage();
         const theme = getTheme();
-        saveSession(diffEditor, language, theme);
+        const viewMode = getViewMode();
+        saveSession(diffEditor, language, theme, viewMode);
     });
 
     return () => clearTimeout(saveTimeout);
