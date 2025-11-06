@@ -49,6 +49,53 @@ In her presence, worries fade away.
 Like petals soft, her kindness shows,
 A beauty that forever grows.`;
 
+// Function to get system theme preference
+function getSystemTheme() {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'vs-dark' : 'vs';
+}
+
+// Function to apply theme based on selection
+function applyTheme(themeSelection) {
+    let actualTheme;
+
+    if (themeSelection === 'system') {
+        actualTheme = getSystemTheme();
+    } else {
+        actualTheme = themeSelection;
+    }
+
+    monaco.editor.setTheme(actualTheme);
+
+    // Update controls background to match theme
+    const controls = document.getElementById('controls');
+    const languageSelector = document.getElementById('language-selector');
+    const themeSelector = document.getElementById('theme-selector');
+    
+    if (actualTheme === 'vs-dark') {
+        controls.style.backgroundColor = '#1e1e1e';
+        controls.style.borderBottomColor = '#3e3e3e';
+        controls.style.color = '#cccccc';
+        
+        // Style dropdowns for dark theme
+        [languageSelector, themeSelector].forEach(selector => {
+            selector.style.backgroundColor = '#3c3c3c';
+            selector.style.color = '#cccccc';
+            selector.style.border = '1px solid #3e3e3e';
+        });
+    } else {
+        controls.style.backgroundColor = '#f0f0f0';
+        controls.style.borderBottomColor = '#ccc';
+        controls.style.color = '#000000';
+        
+        // Style dropdowns for light theme
+        [languageSelector, themeSelector].forEach(selector => {
+            selector.style.backgroundColor = '#ffffff';
+            selector.style.color = '#000000';
+            selector.style.border = '1px solid #ccc';
+        });
+    }
+}
+
 const diffEditor = monaco.editor.createDiffEditor(document.getElementById('container'), {
     enableSplitViewResizing: true,
     renderSideBySide: true,
@@ -63,24 +110,43 @@ diffEditor.setModel({
     modified: monaco.editor.createModel(rightText, 'plaintext')
 });
 
+// Apply initial theme (system)
+applyTheme('system');
+
 // Add language selector event listener
 const languageSelector = document.getElementById('language-selector');
 languageSelector.addEventListener('change', (event) => {
     const selectedLanguage = event.target.value;
-    
+
     // Get current content from both editors
     const originalModel = diffEditor.getOriginalEditor().getModel();
     const modifiedModel = diffEditor.getModifiedEditor().getModel();
     const originalContent = originalModel.getValue();
     const modifiedContent = modifiedModel.getValue();
-    
+
     // Create new models with the selected language
     diffEditor.setModel({
         original: monaco.editor.createModel(originalContent, selectedLanguage),
         modified: monaco.editor.createModel(modifiedContent, selectedLanguage)
     });
-    
+
     // Dispose old models to prevent memory leaks
     originalModel.dispose();
     modifiedModel.dispose();
+});
+
+// Add theme selector event listener
+const themeSelector = document.getElementById('theme-selector');
+themeSelector.addEventListener('change', (event) => {
+    const selectedTheme = event.target.value;
+    applyTheme(selectedTheme);
+});
+
+// Listen for system theme changes when 'system' is selected
+const systemThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+systemThemeMediaQuery.addEventListener('change', (event) => {
+    // Only apply system theme change if user has 'system' selected
+    if (themeSelector.value === 'system') {
+        applyTheme('system');
+    }
 });

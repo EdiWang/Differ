@@ -22,9 +22,13 @@
             padding: 10px;
             background-color: #f0f0f0;
             border-bottom: 1px solid #ccc;
+            display: flex;
+            gap: 20px;
+            align-items: center;
         }
 
-        #language-selector {
+        #language-selector,
+        #theme-selector {
             padding: 5px 10px;
             font-size: 14px;
             border: 1px solid #ccc;
@@ -39,22 +43,32 @@
 
 <body>
     <div id="controls">
-        <label for="language-selector">Language: </label>
-        <select id="language-selector">
-            <option value="plaintext" selected>Plain Text</option>
-            <option value="javascript">JavaScript</option>
-            <option value="typescript">TypeScript</option>
-            <option value="python">Python</option>
-            <option value="java">Java</option>
-            <option value="csharp">C#</option>
-            <option value="cpp">C++</option>
-            <option value="html">HTML</option>
-            <option value="css">CSS</option>
-            <option value="json">JSON</option>
-            <option value="xml">XML</option>
-            <option value="markdown">Markdown</option>
-            <option value="sql">SQL</option>
-        </select>
+        <div>
+            <label for="language-selector">Language: </label>
+            <select id="language-selector">
+                <option value="plaintext" selected>Plain Text</option>
+                <option value="javascript">JavaScript</option>
+                <option value="typescript">TypeScript</option>
+                <option value="python">Python</option>
+                <option value="java">Java</option>
+                <option value="csharp">C#</option>
+                <option value="cpp">C++</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+                <option value="json">JSON</option>
+                <option value="xml">XML</option>
+                <option value="markdown">Markdown</option>
+                <option value="sql">SQL</option>
+            </select>
+        </div>
+        <div>
+            <label for="theme-selector">Theme: </label>
+            <select id="theme-selector">
+                <option value="vs">Light</option>
+                <option value="vs-dark">Dark</option>
+                <option value="system" selected>System</option>
+            </select>
+        </div>
     </div>
     <div id="container"></div>
     <script type="module" src="/main.js"></script>
