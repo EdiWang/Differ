@@ -44,6 +44,10 @@ export function createDiffEditor(containerId, options = {}) {
 function disposeExistingModels(diffEditor) {
     const existingModels = diffEditor.getModel();
     if (existingModels) {
+        // Reset the diff editor model first to detach event listeners
+        diffEditor.setModel(null);
+        
+        // Then dispose the individual models
         existingModels.original?.dispose();
         existingModels.modified?.dispose();
     }
