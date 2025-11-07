@@ -6,122 +6,209 @@ import { createDiffEditor, initializeDiffEditor } from './editor.js';
 import { loadSession, saveSession, setupAutoSave, clearSession } from './storage.js';
 import { setupViewModeSelector, applyViewMode } from './viewMode.js';
 
-// Configure Monaco Environment for web workers
-configureMonacoWorkers();
+// Constants
+const DEFAULT_LANGUAGE = 'plaintext';
+const DEFAULT_THEME = 'system';
+const DEFAULT_VIEW_MODE = 'side-by-side';
+const AUTO_SAVE_INTERVAL = 2000;
 
-// Create the diff editor
-const diffEditor = createDiffEditor('container');
+// DOM Elements Cache
+const elements = {
+    languageSelector: null,
+    themeSelector: null,
+    clearSessionBtn: null,
+    viewModeRadios: null
+};
 
-// Try to load saved session
-const savedSession = loadSession();
-
-// Initialize editor with saved session or sample data
-if (savedSession) {
-    initializeDiffEditor(
-        diffEditor, 
-        savedSession.originalText, 
-        savedSession.modifiedText, 
-        savedSession.language
-    );
-    
-    // Apply saved theme
-    if (savedSession.theme) {
-        applyTheme(savedSession.theme);
-        const themeSelector = document.getElementById('theme-selector');
-        if (themeSelector) {
-            themeSelector.value = savedSession.theme;
-        }
-    }
-    
-    // Set saved language
-    if (savedSession.language) {
-        const languageSelector = document.getElementById('language-selector');
-        if (languageSelector) {
-            languageSelector.value = savedSession.language;
-        }
-    }
-    
-    // Apply saved view mode
-    if (savedSession.viewMode) {
-        applyViewMode(diffEditor, savedSession.viewMode);
-        const viewModeRadio = document.querySelector(`input[name="view-mode"][value="${savedSession.viewMode}"]`);
-        if (viewModeRadio) {
-            viewModeRadio.checked = true;
-        }
-    }
-} else {
-    initializeDiffEditor(diffEditor, leftText, rightText, 'plaintext');
-    applyTheme('system');
+/**
+ * Cache DOM elements to avoid repeated queries
+ */
+function cacheElements() {
+    elements.languageSelector = document.getElementById('language-selector');
+    elements.themeSelector = document.getElementById('theme-selector');
+    elements.clearSessionBtn = document.getElementById('clear-session-btn');
+    elements.viewModeRadios = document.querySelectorAll('input[name="view-mode"]');
 }
 
-// Setup event listeners
-setupLanguageSelector(diffEditor);
-setupThemeListeners(diffEditor);
-setupViewModeSelector(diffEditor);
+/**
+ * Get the currently selected language
+ * @returns {string} Selected language or default
+ */
+function getCurrentLanguage() {
+    return elements.languageSelector?.value ?? DEFAULT_LANGUAGE;
+}
 
-// Helper functions to get current state
-const getCurrentLanguage = () => {
-    const selector = document.getElementById('language-selector');
-    return selector ? selector.value : 'plaintext';
-};
+/**
+ * Get the currently selected theme
+ * @returns {string} Selected theme or default
+ */
+function getCurrentTheme() {
+    return elements.themeSelector?.value ?? DEFAULT_THEME;
+}
 
-const getCurrentTheme = () => {
-    const selector = document.getElementById('theme-selector');
-    return selector ? selector.value : 'system';
-};
-
-const getCurrentViewMode = () => {
+/**
+ * Get the currently selected view mode
+ * @returns {string} Selected view mode or default
+ */
+function getCurrentViewMode() {
     const checkedRadio = document.querySelector('input[name="view-mode"]:checked');
-    return checkedRadio ? checkedRadio.value : 'side-by-side';
-};
+    return checkedRadio?.value ?? DEFAULT_VIEW_MODE;
+}
 
-// Setup auto-save with 2 second debounce
-setupAutoSave(diffEditor, getCurrentLanguage, getCurrentTheme, getCurrentViewMode, 2000);
-
-// Manual save on language/theme/view mode change
-document.getElementById('language-selector')?.addEventListener('change', () => {
-    saveSession(diffEditor, getCurrentLanguage(), getCurrentTheme(), getCurrentViewMode());
-});
-
-document.getElementById('theme-selector')?.addEventListener('change', () => {
-    saveSession(diffEditor, getCurrentLanguage(), getCurrentTheme(), getCurrentViewMode());
-});
-
-// Add event listeners to all view mode radio buttons
-document.querySelectorAll('input[name="view-mode"]').forEach(radio => {
-    radio.addEventListener('change', () => {
-        saveSession(diffEditor, getCurrentLanguage(), getCurrentTheme(), getCurrentViewMode());
-    });
-});
-
-// Clear session button handler
-document.getElementById('clear-session-btn')?.addEventListener('click', () => {
-    if (confirm('Are you sure you want to clear the saved session and reset to default values?')) {
-        // Clear session from localStorage
-        clearSession();
-        
-        // Reset to default values
-        initializeDiffEditor(diffEditor, leftText, rightText, 'plaintext');
-        
-        // Reset selectors
-        const languageSelector = document.getElementById('language-selector');
-        if (languageSelector) {
-            languageSelector.value = 'plaintext';
-        }
-        
-        const themeSelector = document.getElementById('theme-selector');
-        if (themeSelector) {
-            themeSelector.value = 'system';
-        }
-        
-        // Reset view mode to side-by-side
-        const sideBySideRadio = document.querySelector('input[name="view-mode"][value="side-by-side"]');
-        if (sideBySideRadio) {
-            sideBySideRadio.checked = true;
-        }
-        
-        // Apply system theme and side-by-side view
-        applyTheme('system');
-        applyViewMode(diffEditor, 'side-by-side');
+/**
+ * Initialize the editor with saved session or default values
+ * @param {monaco.editor.IStandaloneDiffEditor} diffEditor - The diff editor instance
+ */
+function initializeEditor(diffEditor) {
+    const savedSession = loadSession();
+    
+    if (savedSession) {
+        restoreSession(diffEditor, savedSession);
+    } else {
+        loadDefaultSession(diffEditor);
     }
-});
+}
+
+/**
+ * Restore a saved session
+ * @param {monaco.editor.IStandaloneDiffEditor} diffEditor - The diff editor instance
+ * @param {Object} session - The saved session data
+ */
+function restoreSession(diffEditor, session) {
+    const {
+        originalText,
+        modifiedText,
+        language = DEFAULT_LANGUAGE,
+        theme = DEFAULT_THEME,
+        viewMode = DEFAULT_VIEW_MODE
+    } = session;
+    
+    // Initialize editor content
+    initializeDiffEditor(diffEditor, originalText, modifiedText, language);
+    
+    // Restore theme
+    applyTheme(theme);
+    if (elements.themeSelector) {
+        elements.themeSelector.value = theme;
+    }
+    
+    // Restore language
+    if (elements.languageSelector) {
+        elements.languageSelector.value = language;
+    }
+    
+    // Restore view mode
+    applyViewMode(diffEditor, viewMode);
+    const viewModeRadio = document.querySelector(
+        `input[name="view-mode"][value="${viewMode}"]`
+    );
+    if (viewModeRadio) {
+        viewModeRadio.checked = true;
+    }
+}
+
+/**
+ * Load default session values
+ * @param {monaco.editor.IStandaloneDiffEditor} diffEditor - The diff editor instance
+ */
+function loadDefaultSession(diffEditor) {
+    initializeDiffEditor(diffEditor, leftText, rightText, DEFAULT_LANGUAGE);
+    applyTheme(DEFAULT_THEME);
+}
+
+/**
+ * Reset the editor to default values
+ * @param {monaco.editor.IStandaloneDiffEditor} diffEditor - The diff editor instance
+ */
+function resetToDefaults(diffEditor) {
+    clearSession();
+    loadDefaultSession(diffEditor);
+    
+    // Reset UI controls
+    if (elements.languageSelector) {
+        elements.languageSelector.value = DEFAULT_LANGUAGE;
+    }
+    
+    if (elements.themeSelector) {
+        elements.themeSelector.value = DEFAULT_THEME;
+    }
+    
+    const sideBySideRadio = document.querySelector(
+        'input[name="view-mode"][value="side-by-side"]'
+    );
+    if (sideBySideRadio) {
+        sideBySideRadio.checked = true;
+    }
+    
+    applyViewMode(diffEditor, DEFAULT_VIEW_MODE);
+}
+
+/**
+ * Setup event listeners for controls
+ * @param {monaco.editor.IStandaloneDiffEditor} diffEditor - The diff editor instance
+ */
+function setupEventListeners(diffEditor) {
+    const saveCurrentSession = () => {
+        saveSession(
+            diffEditor,
+            getCurrentLanguage(),
+            getCurrentTheme(),
+            getCurrentViewMode()
+        );
+    };
+    
+    // Language selector change
+    elements.languageSelector?.addEventListener('change', saveCurrentSession);
+    
+    // Theme selector change
+    elements.themeSelector?.addEventListener('change', saveCurrentSession);
+    
+    // View mode radio buttons change
+    elements.viewModeRadios.forEach(radio => {
+        radio.addEventListener('change', saveCurrentSession);
+    });
+    
+    // Clear session button
+    elements.clearSessionBtn?.addEventListener('click', () => {
+        if (confirm('Are you sure you want to clear the saved session and reset to default values?')) {
+            resetToDefaults(diffEditor);
+        }
+    });
+}
+
+/**
+ * Initialize the application
+ */
+function init() {
+    // Configure Monaco Environment for web workers
+    configureMonacoWorkers();
+    
+    // Cache DOM elements
+    cacheElements();
+    
+    // Create the diff editor
+    const diffEditor = createDiffEditor('container');
+    
+    // Initialize editor with saved or default data
+    initializeEditor(diffEditor);
+    
+    // Setup all feature modules
+    setupLanguageSelector(diffEditor);
+    setupThemeListeners(diffEditor);
+    setupViewModeSelector(diffEditor);
+    
+    // Setup event listeners
+    setupEventListeners(diffEditor);
+    
+    // Setup auto-save
+    setupAutoSave(
+        diffEditor,
+        getCurrentLanguage,
+        getCurrentTheme,
+        getCurrentViewMode,
+        AUTO_SAVE_INTERVAL
+    );
+}
+
+// Start the application
+init();
