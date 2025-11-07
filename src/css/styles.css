@@ -1,5 +1,5 @@
 :root {
-    --bg-primary: #f0f0f0;
+    --bg-primary: #e8e8e8;
     --bg-secondary: #ffffff;
     --border-color: #ccc;
     --text-primary: #000000;
@@ -28,7 +28,7 @@
 
 /* Allow manual override when theme selector is used */
 body[data-theme="light"] {
-    --bg-primary: #f0f0f0;
+    --bg-primary: #e8e8e8;
     --bg-secondary: #ffffff;
     --border-color: #ccc;
     --text-primary: #000000;
@@ -47,7 +47,7 @@ body[data-theme="dark"] {
 
 body {
     margin: 0;
-    padding: 0;
+    padding: 8px;
     font-family: Arial, sans-serif;
     background-color: var(--bg-primary);
     color: var(--text-primary);
@@ -55,8 +55,10 @@ body {
 
 #controls {
     padding: 10px;
-    background-color: var(--bg-primary);
-    border-bottom: 1px solid var(--border-color);
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px 8px 0 0;
+    border-bottom: none;
     display: flex;
     gap: 20px;
     align-items: center;
@@ -116,13 +118,15 @@ body {
 }
 
 #container {
-    height: calc(100vh - 100px);
+    height: calc(100vh - 116px);
+    border: 1px solid var(--border-color);
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
 }
 
 #footer {
     padding: 10px 20px;
     background-color: var(--bg-primary);
-    border-top: 1px solid var(--border-color);
     font-size: 12px;
     color: var(--text-secondary);
     text-align: center;
