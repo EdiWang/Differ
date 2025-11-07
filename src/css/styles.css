@@ -1,127 +1,183 @@
 :root {
-    --bg-primary: #e8e8e8;
+    --bg-primary: #f3f3f3;
     --bg-secondary: #ffffff;
-    --border-color: #ccc;
+    --bg-acrylic: rgba(243, 243, 243, 0.7);
+    --border-color: #e5e5e5;
     --text-primary: #000000;
-    --text-secondary: #666;
-    --link-color: #0066cc;
-    --btn-danger-bg: #dc3545;
-    --btn-danger-border: #bd2130;
-    --btn-danger-hover: #c82333;
-    --btn-danger-active: #bd2130;
+    --text-secondary: #605e5c;
+    --link-color: #0067c0;
+    --btn-danger-bg: #d13438;
+    --btn-danger-border: #d13438;
+    --btn-danger-hover: #a4262c;
+    --btn-danger-active: #8b1b1f;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --radius-small: 4px;
+    --radius-medium: 8px;
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --bg-primary: #1e1e1e;
-        --bg-secondary: #3c3c3c;
-        --border-color: #3e3e3e;
-        --text-primary: #cccccc;
-        --text-secondary: #cccccc;
-        --link-color: #4fc3f7;
-        --btn-danger-bg: #dc3545;
-        --btn-danger-border: #bd2130;
-        --btn-danger-hover: #c82333;
-        --btn-danger-active: #bd2130;
+        --bg-primary: #202020;
+        --bg-secondary: #2c2c2c;
+        --bg-acrylic: rgba(44, 44, 44, 0.7);
+        --border-color: #3d3d3d;
+        --text-primary: #ffffff;
+        --text-secondary: #a19f9d;
+        --link-color: #60cdff;
+        --btn-danger-bg: #d13438;
+        --btn-danger-border: #d13438;
+        --btn-danger-hover: #f1707b;
+        --btn-danger-active: #ff8a93;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.15);
+        --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.25);
     }
 }
 
 /* Allow manual override when theme selector is used */
 body[data-theme="light"] {
-    --bg-primary: #e8e8e8;
+    --bg-primary: #f3f3f3;
     --bg-secondary: #ffffff;
-    --border-color: #ccc;
+    --bg-acrylic: rgba(243, 243, 243, 0.7);
+    --border-color: #e5e5e5;
     --text-primary: #000000;
-    --text-secondary: #666;
-    --link-color: #0066cc;
+    --text-secondary: #605e5c;
+    --link-color: #0067c0;
 }
 
 body[data-theme="dark"] {
-    --bg-primary: #1e1e1e;
-    --bg-secondary: #3c3c3c;
-    --border-color: #3e3e3e;
-    --text-primary: #cccccc;
-    --text-secondary: #cccccc;
-    --link-color: #4fc3f7;
+    --bg-primary: #202020;
+    --bg-secondary: #2c2c2c;
+    --bg-acrylic: rgba(44, 44, 44, 0.7);
+    --border-color: #3d3d3d;
+    --text-primary: #ffffff;
+    --text-secondary: #a19f9d;
+    --link-color: #60cdff;
 }
 
 body {
     margin: 0;
     padding: 8px;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     background-color: var(--bg-primary);
     color: var(--text-primary);
 }
 
 #controls {
-    padding: 10px;
+    padding: 8px 16px;
     background-color: var(--bg-secondary);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
     border: 1px solid var(--border-color);
-    border-radius: 8px 8px 0 0;
+    border-radius: var(--radius-medium) var(--radius-medium) 0 0;
     border-bottom: none;
     display: flex;
-    gap: 20px;
+    gap: 12px;
     align-items: center;
     color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+    min-height: 44px;
 }
 
 #language-selector,
 #theme-selector,
 #font-size-selector {
-    padding: 5px 10px;
+    padding: 6px 12px;
     font-size: 14px;
+    font-family: 'Segoe UI', sans-serif;
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-small);
     background-color: var(--bg-secondary);
     color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-sm);
+    outline: none;
+}
+
+#language-selector:hover,
+#theme-selector:hover,
+#font-size-selector:hover {
+    background-color: var(--bg-primary);
+    border-color: var(--text-secondary);
+}
+
+#language-selector:focus,
+#theme-selector:focus,
+#font-size-selector:focus {
+    border-color: var(--link-color);
+    box-shadow: 0 0 0 2px rgba(0, 103, 192, 0.15);
 }
 
 #view-mode-group {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 16px;
     color: var(--text-primary);
+    padding: 4px 8px;
 }
 
 #view-mode-group .radio-label {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     cursor: pointer;
     font-size: 14px;
+    font-weight: 400;
+    transition: color 0.15s ease;
+    padding: 4px 8px;
+    border-radius: var(--radius-small);
+}
+
+#view-mode-group .radio-label:hover {
+    background-color: var(--bg-primary);
 }
 
 #view-mode-group input[type="radio"] {
     cursor: pointer;
     width: 16px;
     height: 16px;
+    accent-color: var(--link-color);
 }
 
 #clear-session-btn {
     margin-left: auto;
-    padding: 5px 15px;
+    padding: 6px 16px;
     font-size: 14px;
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: 500;
     background-color: var(--btn-danger-bg);
     color: white;
     border: 1px solid var(--btn-danger-border);
-    border-radius: 4px;
+    border-radius: var(--radius-small);
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-sm);
+    outline: none;
 }
 
 #clear-session-btn:hover {
     background-color: var(--btn-danger-hover);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
 }
 
 #clear-session-btn:active {
     background-color: var(--btn-danger-active);
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+#clear-session-btn:focus {
+    box-shadow: 0 0 0 2px rgba(209, 52, 56, 0.3);
 }
 
 #container {
-    height: calc(100vh - 116px);
+    height: calc(100vh - 128px);
     border: 1px solid var(--border-color);
-    border-radius: 0 0 8px 8px;
+    border-radius: 0 0 var(--radius-medium) var(--radius-medium);
     overflow: hidden;
+    box-shadow: var(--shadow-md);
 }
 
 #footer {
@@ -140,6 +196,7 @@ body {
 #footer a {
     color: var(--link-color);
     text-decoration: none;
+    transition: color 0.15s ease;
 }
 
 #footer a:hover {
