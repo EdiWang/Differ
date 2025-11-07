@@ -79,43 +79,44 @@ body {
     min-height: 44px;
 }
 
-    /* Input group styling for dropdowns with icons */
-    #controls > div:has(select) {
-        display: flex;
-        align-items: center;
-        position: relative;
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-small);
-        background-color: var(--bg-secondary);
-        overflow: hidden;
-        box-shadow: var(--shadow-sm);
-        transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+/* Input group styling for dropdowns with icons */
+.input-group {
+    display: flex;
+    align-items: stretch;
+    position: relative;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-small);
+    background-color: var(--bg-secondary);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+    .input-group:hover {
+        background-color: var(--bg-primary);
+        border-color: var(--text-secondary);
     }
 
-        #controls > div:has(select):hover {
-            background-color: var(--bg-primary);
-            border-color: var(--text-secondary);
-        }
+    .input-group:focus-within {
+        border-color: var(--link-color);
+        box-shadow: 0 0 0 2px rgba(0, 103, 192, 0.15);
+    }
 
-        #controls > div:has(select):focus-within {
-            border-color: var(--link-color);
-            box-shadow: 0 0 0 2px rgba(0, 103, 192, 0.15);
-        }
+    .input-group label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 8px;
+        background-color: var(--bg-primary);
+        border-right: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        pointer-events: none;
+        min-width: 32px;
+    }
 
-        #controls > div:has(select) label {
-            display: flex;
-            align-items: center;
-            padding: 6px 8px 6px 10px;
-            background-color: var(--bg-primary);
-            border-right: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            pointer-events: none;
+        .input-group label svg {
+            display: block;
         }
-
-            #controls > div:has(select) label svg {
-                vertical-align: middle;
-                display: block;
-            }
 
 #language-selector,
 #theme-selector,
@@ -124,27 +125,21 @@ body {
     font-size: 14px;
     font-family: 'Segoe UI', sans-serif;
     border: none;
-    border-radius: 0;
     background-color: transparent;
     color: var(--text-primary);
     cursor: pointer;
     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: none;
     outline: none;
     min-width: 120px;
 }
 
-    #language-selector:hover,
-    #theme-selector:hover,
-    #font-size-selector:hover {
-        background-color: transparent;
-    }
-
-    #language-selector:focus,
-    #theme-selector:focus,
-    #font-size-selector:focus {
-        background-color: transparent;
-    }
+/* Fix dropdown options in dark mode */
+#language-selector option,
+#theme-selector option,
+#font-size-selector option {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
 
 #view-mode-group {
     display: flex;
