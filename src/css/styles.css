@@ -72,12 +72,50 @@ body {
     border-radius: var(--radius-medium) var(--radius-medium) 0 0;
     border-bottom: none;
     display: flex;
-    gap: 26px;
+    gap: 12px;
     align-items: center;
     color: var(--text-primary);
     box-shadow: var(--shadow-sm);
     min-height: 44px;
 }
+
+    /* Input group styling for dropdowns with icons */
+    #controls > div:has(select) {
+        display: flex;
+        align-items: center;
+        position: relative;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-small);
+        background-color: var(--bg-secondary);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+        #controls > div:has(select):hover {
+            background-color: var(--bg-primary);
+            border-color: var(--text-secondary);
+        }
+
+        #controls > div:has(select):focus-within {
+            border-color: var(--link-color);
+            box-shadow: 0 0 0 2px rgba(0, 103, 192, 0.15);
+        }
+
+        #controls > div:has(select) label {
+            display: flex;
+            align-items: center;
+            padding: 6px 8px 6px 10px;
+            background-color: var(--bg-primary);
+            border-right: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+            #controls > div:has(select) label svg {
+                vertical-align: middle;
+                display: block;
+            }
 
 #language-selector,
 #theme-selector,
@@ -85,29 +123,28 @@ body {
     padding: 6px 12px;
     font-size: 14px;
     font-family: 'Segoe UI', sans-serif;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-small);
-    background-color: var(--bg-secondary);
+    border: none;
+    border-radius: 0;
+    background-color: transparent;
     color: var(--text-primary);
     cursor: pointer;
     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: var(--shadow-sm);
+    box-shadow: none;
     outline: none;
+    min-width: 120px;
 }
 
-#language-selector:hover,
-#theme-selector:hover,
-#font-size-selector:hover {
-    background-color: var(--bg-primary);
-    border-color: var(--text-secondary);
-}
+    #language-selector:hover,
+    #theme-selector:hover,
+    #font-size-selector:hover {
+        background-color: transparent;
+    }
 
-#language-selector:focus,
-#theme-selector:focus,
-#font-size-selector:focus {
-    border-color: var(--link-color);
-    box-shadow: 0 0 0 2px rgba(0, 103, 192, 0.15);
-}
+    #language-selector:focus,
+    #theme-selector:focus,
+    #font-size-selector:focus {
+        background-color: transparent;
+    }
 
 #view-mode-group {
     display: flex;
@@ -117,28 +154,33 @@ body {
     padding: 4px 8px;
 }
 
-#view-mode-group .radio-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 400;
-    transition: color 0.15s ease;
-    padding: 4px 8px;
-    border-radius: var(--radius-small);
-}
+    #view-mode-group .radio-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 400;
+        transition: color 0.15s ease;
+        padding: 4px 8px;
+        border-radius: var(--radius-small);
+    }
 
-#view-mode-group .radio-label:hover {
-    background-color: var(--bg-primary);
-}
+        #view-mode-group .radio-label svg {
+            vertical-align: middle;
+            display: inline-block;
+        }
 
-#view-mode-group input[type="radio"] {
-    cursor: pointer;
-    width: 16px;
-    height: 16px;
-    accent-color: var(--link-color);
-}
+        #view-mode-group .radio-label:hover {
+            background-color: var(--bg-primary);
+        }
+
+    #view-mode-group input[type="radio"] {
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+        accent-color: var(--link-color);
+    }
 
 #clear-session-btn {
     margin-left: auto;
@@ -156,21 +198,27 @@ body {
     outline: none;
 }
 
-#clear-session-btn:hover {
-    background-color: var(--btn-danger-hover);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
-}
+    #clear-session-btn svg {
+        vertical-align: bottom;
+        display: inline-block;
+        margin-right: 6px;
+    }
 
-#clear-session-btn:active {
-    background-color: var(--btn-danger-active);
-    transform: translateY(0);
-    box-shadow: var(--shadow-sm);
-}
+    #clear-session-btn:hover {
+        background-color: var(--btn-danger-hover);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-1px);
+    }
 
-#clear-session-btn:focus {
-    box-shadow: 0 0 0 2px rgba(209, 52, 56, 0.3);
-}
+    #clear-session-btn:active {
+        background-color: var(--btn-danger-active);
+        transform: translateY(0);
+        box-shadow: var(--shadow-sm);
+    }
+
+    #clear-session-btn:focus {
+        box-shadow: 0 0 0 2px rgba(209, 52, 56, 0.3);
+    }
 
 #container {
     height: calc(100vh - 128px);
@@ -193,15 +241,15 @@ body {
     gap: 20px;
 }
 
-#footer a {
-    color: var(--link-color);
-    text-decoration: none;
-    transition: color 0.15s ease;
-}
+    #footer a {
+        color: var(--link-color);
+        text-decoration: none;
+        transition: color 0.15s ease;
+    }
 
-#footer a:hover {
-    text-decoration: underline;
-}
+        #footer a:hover {
+            text-decoration: underline;
+        }
 
 #mobile-warning {
     display: none;
@@ -260,7 +308,7 @@ body {
     #mobile-warning {
         display: flex;
     }
-    
+
     #controls,
     #container,
     #footer {
@@ -274,7 +322,7 @@ body {
         flex-wrap: wrap;
         gap: 8px;
     }
-    
+
     #view-mode-group {
         width: 100%;
         justify-content: flex-start;
@@ -296,10 +344,10 @@ body {
     transition: opacity 0.3s ease-out;
 }
 
-#loading-indicator.hidden {
-    opacity: 0;
-    pointer-events: none;
-}
+    #loading-indicator.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
 
 .loading-content {
     text-align: center;
@@ -316,8 +364,13 @@ body {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .loading-content p {
