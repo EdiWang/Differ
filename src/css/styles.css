@@ -14,12 +14,31 @@ body {
 }
 
 #language-selector,
-#theme-selector,
-#view-mode-selector {
+#theme-selector {
     padding: 5px 10px;
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+
+#view-mode-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#view-mode-group .radio-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#view-mode-group input[type="radio"] {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
 }
 
 #clear-session-btn {

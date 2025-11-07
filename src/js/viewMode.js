@@ -1,18 +1,22 @@
 /**
- * Sets up the view mode selector to switch between side-by-side and inline diff views
+ * Sets up the view mode radio buttons to switch between side-by-side and inline diff views
  * @param {monaco.editor.IStandaloneDiffEditor} diffEditor - The Monaco diff editor instance
  */
 export function setupViewModeSelector(diffEditor) {
-    const viewModeSelector = document.getElementById('view-mode-selector');
+    const viewModeRadios = document.querySelectorAll('input[name="view-mode"]');
     
-    if (!viewModeSelector) {
-        console.error('View mode selector not found');
+    if (viewModeRadios.length === 0) {
+        console.error('View mode radio buttons not found');
         return;
     }
 
-    viewModeSelector.addEventListener('change', (event) => {
-        const viewMode = event.target.value;
-        applyViewMode(diffEditor, viewMode);
+    viewModeRadios.forEach(radio => {
+        radio.addEventListener('change', (event) => {
+            if (event.target.checked) {
+                const viewMode = event.target.value;
+                applyViewMode(diffEditor, viewMode);
+            }
+        });
     });
 }
 

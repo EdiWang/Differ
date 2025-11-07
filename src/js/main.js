@@ -44,9 +44,9 @@ if (savedSession) {
     // Apply saved view mode
     if (savedSession.viewMode) {
         applyViewMode(diffEditor, savedSession.viewMode);
-        const viewModeSelector = document.getElementById('view-mode-selector');
-        if (viewModeSelector) {
-            viewModeSelector.value = savedSession.viewMode;
+        const viewModeRadio = document.querySelector(`input[name="view-mode"][value="${savedSession.viewMode}"]`);
+        if (viewModeRadio) {
+            viewModeRadio.checked = true;
         }
     }
 } else {
@@ -71,8 +71,8 @@ const getCurrentTheme = () => {
 };
 
 const getCurrentViewMode = () => {
-    const selector = document.getElementById('view-mode-selector');
-    return selector ? selector.value : 'side-by-side';
+    const checkedRadio = document.querySelector('input[name="view-mode"]:checked');
+    return checkedRadio ? checkedRadio.value : 'side-by-side';
 };
 
 // Setup auto-save with 2 second debounce
@@ -87,8 +87,11 @@ document.getElementById('theme-selector')?.addEventListener('change', () => {
     saveSession(diffEditor, getCurrentLanguage(), getCurrentTheme(), getCurrentViewMode());
 });
 
-document.getElementById('view-mode-selector')?.addEventListener('change', () => {
-    saveSession(diffEditor, getCurrentLanguage(), getCurrentTheme(), getCurrentViewMode());
+// Add event listeners to all view mode radio buttons
+document.querySelectorAll('input[name="view-mode"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+        saveSession(diffEditor, getCurrentLanguage(), getCurrentTheme(), getCurrentViewMode());
+    });
 });
 
 // Clear session button handler
@@ -111,9 +114,10 @@ document.getElementById('clear-session-btn')?.addEventListener('click', () => {
             themeSelector.value = 'system';
         }
         
-        const viewModeSelector = document.getElementById('view-mode-selector');
-        if (viewModeSelector) {
-            viewModeSelector.value = 'side-by-side';
+        // Reset view mode to side-by-side
+        const sideBySideRadio = document.querySelector('input[name="view-mode"][value="side-by-side"]');
+        if (sideBySideRadio) {
+            sideBySideRadio.checked = true;
         }
         
         // Apply system theme and side-by-side view

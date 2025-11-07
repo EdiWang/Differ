@@ -20,7 +20,7 @@ export function applyTheme(themeSelection) {
     const footer = document.getElementById('footer');
     const languageSelector = document.getElementById('language-selector');
     const themeSelector = document.getElementById('theme-selector');
-    const viewModeSelector = document.getElementById('view-mode-selector');
+    const viewModeGroup = document.getElementById('view-mode-group');
     
     if (actualTheme === 'vs-dark') {
         // Controls bar styling
@@ -40,13 +40,18 @@ export function applyTheme(themeSelection) {
         });
         
         // Style dropdowns for dark theme
-        [languageSelector, themeSelector, viewModeSelector].forEach(selector => {
+        [languageSelector, themeSelector].forEach(selector => {
             if (selector) {
                 selector.style.backgroundColor = '#3c3c3c';
                 selector.style.color = '#cccccc';
                 selector.style.border = '1px solid #3e3e3e';
             }
         });
+        
+        // Style view mode group for dark theme
+        if (viewModeGroup) {
+            viewModeGroup.style.color = '#cccccc';
+        }
     } else {
         // Controls bar styling
         controls.style.backgroundColor = '#f0f0f0';
@@ -65,13 +70,18 @@ export function applyTheme(themeSelection) {
         });
         
         // Style dropdowns for light theme
-        [languageSelector, themeSelector, viewModeSelector].forEach(selector => {
+        [languageSelector, themeSelector].forEach(selector => {
             if (selector) {
                 selector.style.backgroundColor = '#ffffff';
                 selector.style.color = '#000000';
                 selector.style.border = '1px solid #ccc';
             }
         });
+        
+        // Style view mode group for light theme
+        if (viewModeGroup) {
+            viewModeGroup.style.color = '#000000';
+        }
     }
 }
 
