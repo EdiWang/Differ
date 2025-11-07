@@ -1,0 +1,30 @@
+#container {
+    height: calc(100vh - 128px);
+    border: 1px solid var(--border-color);
+    border-radius: 0 0 var(--radius-medium) var(--radius-medium);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+#footer {
+    padding: 10px 20px;
+    background-color: var(--bg-primary);
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-align: center;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+    #footer a {
+        color: var(--link-color);
+        text-decoration: none;
+        transition: color 0.15s ease;
+    }
+
+        #footer a:hover {
+            text-decoration: underline;
+        }

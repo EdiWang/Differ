@@ -1,0 +1,7 @@
+body {
+    margin: 0;
+    padding: 8px;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}

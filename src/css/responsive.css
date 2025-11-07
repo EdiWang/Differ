@@ -1,0 +1,25 @@
+/* Show warning on small screens */
+@media (max-width: 767px) {
+    #mobile-warning {
+        display: flex;
+    }
+
+    #controls,
+    #container,
+    #footer {
+        display: none;
+    }
+}
+
+/* Adjust layout for tablets in portrait mode */
+@media (max-width: 1024px) and (min-width: 768px) {
+    #controls {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    #view-mode-group {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
