@@ -34,8 +34,9 @@ function getEditorModels(diffEditor) {
  * @param {string} language - Current language setting
  * @param {string} theme - Current theme setting
  * @param {string} viewMode - Current view mode
+ * @param {number} fontSize - Current font size
  */
-export function saveSession(diffEditor, language, theme, viewMode = 'side-by-side') {
+export function saveSession(diffEditor, language, theme, viewMode = 'side-by-side', fontSize = 14) {
     try {
         const models = getEditorModels(diffEditor);
         if (!models) {
@@ -50,6 +51,7 @@ export function saveSession(diffEditor, language, theme, viewMode = 'side-by-sid
             language,
             theme,
             viewMode,
+            fontSize,
             timestamp: new Date().toISOString()
         };
 
@@ -136,16 +138,18 @@ function createDebouncedSave(saveFunc, delay) {
  * @param {Function} getLanguage - Function to get current language
  * @param {Function} getTheme - Function to get current theme
  * @param {Function} getViewMode - Function to get current view mode
+ * @param {Function} getFontSize - Function to get current font size
  * @param {number} interval - Debounce interval in milliseconds
  * @returns {Function} Cleanup function to remove listeners
  */
-export function setupAutoSave(diffEditor, getLanguage, getTheme, getViewMode, interval = 2000) {
+export function setupAutoSave(diffEditor, getLanguage, getTheme, getViewMode, getFontSize, interval = 2000) {
     const saveFunc = () => {
         saveSession(
             diffEditor,
             getLanguage(),
             getTheme(),
-            getViewMode()
+            getViewMode(),
+            getFontSize()
         );
     };
     

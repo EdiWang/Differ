@@ -2,6 +2,7 @@ import { configureMonacoWorkers } from './workers.js';
 import { leftText, rightText } from './sampleData.js';
 import { applyTheme, setupThemeListeners } from './theme.js';
 import { setupLanguageSelector } from './language.js';
+import { setupFontSizeSelector, applyFontSize } from './fontSize.js';
 import { createDiffEditor, initializeDiffEditor } from './editor.js';
 import { loadSession, saveSession, setupAutoSave, clearSession } from './storage.js';
 import { setupViewModeSelector, applyViewMode } from './viewMode.js';
@@ -10,12 +11,14 @@ import { setupViewModeSelector, applyViewMode } from './viewMode.js';
 const DEFAULT_LANGUAGE = 'plaintext';
 const DEFAULT_THEME = 'system';
 const DEFAULT_VIEW_MODE = 'side-by-side';
+const DEFAULT_FONT_SIZE = 14;
 const AUTO_SAVE_INTERVAL = 2000;
 
 // DOM Elements Cache
 const elements = {
     languageSelector: null,
     themeSelector: null,
+    fontSizeSelector: null,
     clearSessionBtn: null,
     viewModeRadios: null
 };
@@ -26,6 +29,7 @@ const elements = {
 function cacheElements() {
     elements.languageSelector = document.getElementById('language-selector');
     elements.themeSelector = document.getElementById('theme-selector');
+    elements.fontSizeSelector = document.getElementById('font-size-selector');
     elements.clearSessionBtn = document.getElementById('clear-session-btn');
     elements.viewModeRadios = document.querySelectorAll('input[name="view-mode"]');
 }
@@ -56,6 +60,15 @@ function getCurrentViewMode() {
 }
 
 /**
+ * Get the currently selected font size
+ * @returns {number} Selected font size or default
+ */
+function getCurrentFontSize() {
+    const value = elements.fontSizeSelector?.value;
+    return value ? parseInt(value, 10) : DEFAULT_FONT_SIZE;
+}
+
+/**
  * Initialize the editor with saved session or default values
  * @param {monaco.editor.IStandaloneDiffEditor} diffEditor - The diff editor instance
  */
@@ -80,7 +93,8 @@ function restoreSession(diffEditor, session) {
         modifiedText,
         language = DEFAULT_LANGUAGE,
         theme = DEFAULT_THEME,
-        viewMode = DEFAULT_VIEW_MODE
+        viewMode = DEFAULT_VIEW_MODE,
+        fontSize = DEFAULT_FONT_SIZE
     } = session;
     
     // Initialize editor content
@@ -95,6 +109,12 @@ function restoreSession(diffEditor, session) {
     // Restore language
     if (elements.languageSelector) {
         elements.languageSelector.value = language;
+    }
+    
+    // Restore font size
+    applyFontSize(diffEditor, fontSize);
+    if (elements.fontSizeSelector) {
+        elements.fontSizeSelector.value = fontSize.toString();
     }
     
     // Restore view mode
@@ -114,6 +134,7 @@ function restoreSession(diffEditor, session) {
 function loadDefaultSession(diffEditor) {
     initializeDiffEditor(diffEditor, leftText, rightText, DEFAULT_LANGUAGE);
     applyTheme(DEFAULT_THEME);
+    applyFontSize(diffEditor, DEFAULT_FONT_SIZE);
 }
 
 /**
@@ -131,6 +152,10 @@ function resetToDefaults(diffEditor) {
     
     if (elements.themeSelector) {
         elements.themeSelector.value = DEFAULT_THEME;
+    }
+    
+    if (elements.fontSizeSelector) {
+        elements.fontSizeSelector.value = DEFAULT_FONT_SIZE.toString();
     }
     
     const sideBySideRadio = document.querySelector(
@@ -153,7 +178,8 @@ function setupEventListeners(diffEditor) {
             diffEditor,
             getCurrentLanguage(),
             getCurrentTheme(),
-            getCurrentViewMode()
+            getCurrentViewMode(),
+            getCurrentFontSize()
         );
     };
     
@@ -162,6 +188,9 @@ function setupEventListeners(diffEditor) {
     
     // Theme selector change
     elements.themeSelector?.addEventListener('change', saveCurrentSession);
+    
+    // Font size selector change
+    elements.fontSizeSelector?.addEventListener('change', saveCurrentSession);
     
     // View mode radio buttons change
     elements.viewModeRadios.forEach(radio => {
@@ -195,6 +224,7 @@ function init() {
     // Setup all feature modules
     setupLanguageSelector(diffEditor);
     setupThemeListeners(diffEditor);
+    setupFontSizeSelector(diffEditor);
     setupViewModeSelector(diffEditor);
     
     // Setup event listeners
@@ -206,6 +236,7 @@ function init() {
         getCurrentLanguage,
         getCurrentTheme,
         getCurrentViewMode,
+        getCurrentFontSize,
         AUTO_SAVE_INTERVAL
     );
 }

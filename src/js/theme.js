@@ -55,6 +55,7 @@ function getThemedElements() {
         footer: document.getElementById('footer'),
         languageSelector: document.getElementById('language-selector'),
         themeSelector: document.getElementById('theme-selector'),
+        fontSizeSelector: document.getElementById('font-size-selector'),
         viewModeGroup: document.getElementById('view-mode-group'),
         clearSessionBtn: document.getElementById('clear-session-btn')
     };
@@ -139,7 +140,7 @@ function applyUITheme(actualTheme) {
     applyControlsTheme(elements.controls, themeConfig);
     applyFooterTheme(elements.footer, themeConfig);
     applySelectorTheme(
-        [elements.languageSelector, elements.themeSelector],
+        [elements.languageSelector, elements.themeSelector, elements.fontSizeSelector],
         themeConfig
     );
     

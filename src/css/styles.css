@@ -14,7 +14,8 @@ body {
 }
 
 #language-selector,
-#theme-selector {
+#theme-selector,
+#font-size-selector {
     padding: 5px 10px;
     font-size: 14px;
     border: 1px solid #ccc;
