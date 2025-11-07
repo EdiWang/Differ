@@ -20,7 +20,8 @@ const elements = {
     themeSelector: null,
     fontSizeSelector: null,
     clearSessionBtn: null,
-    viewModeRadios: null
+    viewModeRadios: null,
+    loadingIndicator: null
 };
 
 /**
@@ -32,6 +33,20 @@ function cacheElements() {
     elements.fontSizeSelector = document.getElementById('font-size-selector');
     elements.clearSessionBtn = document.getElementById('clear-session-btn');
     elements.viewModeRadios = document.querySelectorAll('input[name="view-mode"]');
+    elements.loadingIndicator = document.getElementById('loading-indicator');
+}
+
+/**
+ * Hide the loading indicator
+ */
+function hideLoadingIndicator() {
+    if (elements.loadingIndicator) {
+        elements.loadingIndicator.classList.add('hidden');
+        // Remove from DOM after transition
+        setTimeout(() => {
+            elements.loadingIndicator.style.display = 'none';
+        }, 300);
+    }
 }
 
 /**
@@ -208,37 +223,45 @@ function setupEventListeners(diffEditor) {
 /**
  * Initialize the application
  */
-function init() {
-    // Configure Monaco Environment for web workers
-    configureMonacoWorkers();
-    
-    // Cache DOM elements
-    cacheElements();
-    
-    // Create the diff editor
-    const diffEditor = createDiffEditor('container');
-    
-    // Initialize editor with saved or default data
-    initializeEditor(diffEditor);
-    
-    // Setup all feature modules
-    setupLanguageSelector(diffEditor);
-    setupThemeListeners(diffEditor);
-    setupFontSizeSelector(diffEditor);
-    setupViewModeSelector(diffEditor);
-    
-    // Setup event listeners
-    setupEventListeners(diffEditor);
-    
-    // Setup auto-save
-    setupAutoSave(
-        diffEditor,
-        getCurrentLanguage,
-        getCurrentTheme,
-        getCurrentViewMode,
-        getCurrentFontSize,
-        AUTO_SAVE_INTERVAL
-    );
+async function init() {
+    try {
+        // Configure Monaco Environment for web workers
+        configureMonacoWorkers();
+        
+        // Cache DOM elements
+        cacheElements();
+        
+        // Create the diff editor
+        const diffEditor = createDiffEditor('container');
+        
+        // Initialize editor with saved or default data
+        initializeEditor(diffEditor);
+        
+        // Setup all feature modules
+        setupLanguageSelector(diffEditor);
+        setupThemeListeners(diffEditor);
+        setupFontSizeSelector(diffEditor);
+        setupViewModeSelector(diffEditor);
+        
+        // Setup event listeners
+        setupEventListeners(diffEditor);
+        
+        // Setup auto-save
+        setupAutoSave(
+            diffEditor,
+            getCurrentLanguage,
+            getCurrentTheme,
+            getCurrentViewMode,
+            getCurrentFontSize,
+            AUTO_SAVE_INTERVAL
+        );
+        
+        // Hide loading indicator after initialization
+        hideLoadingIndicator();
+    } catch (error) {
+        console.error('Error initializing editor:', error);
+        hideLoadingIndicator();
+    }
 }
 
 // Start the application
