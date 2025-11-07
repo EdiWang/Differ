@@ -2,6 +2,8 @@
 
 A web-based diff editor built with Monaco Editor, providing a clean and intuitive interface for comparing text and code with syntax highlighting support.
 
+Demo: https://diff.edi.wang
+
 ## Features
 
 - **Side-by-side diff view** powered by Monaco Editor
@@ -26,7 +28,10 @@ npx vite
 
 ### Build for production
 
-
+```
+cd src
+npm run build
+```
 
 ## Built With
 
