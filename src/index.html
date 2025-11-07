@@ -15,9 +15,9 @@
 </head>
 
 <body>
-    <div id="mobile-warning">
+    <div id="mobile-warning" role="alert" aria-live="polite">
         <div class="warning-content">
-            <svg class="warning-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg class="warning-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
                 <line x1="12" y1="9" x2="12" y2="13"></line>
                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
@@ -27,16 +27,16 @@
             <p class="warning-note">Minimum recommended width: 768px</p>
         </div>
     </div>
-    <div id="loading-indicator">
+    <div id="loading-indicator" role="status" aria-live="polite" aria-label="Loading editor">
         <div class="loading-content">
-            <div class="spinner"></div>
+            <div class="spinner" aria-hidden="true"></div>
             <p>Loading Editor...</p>
         </div>
     </div>
-    <div id="controls">
+    <div id="controls" role="toolbar" aria-label="Editor controls">
         <div>
             <label for="language-selector">Language: </label>
-            <select id="language-selector">
+            <select id="language-selector" aria-label="Select programming language">
                 <option value="plaintext" selected>Plain Text</option>
                 <option value="javascript">JavaScript</option>
                 <option value="typescript">TypeScript</option>
@@ -54,7 +54,7 @@
         </div>
         <div>
             <label for="theme-selector">Theme: </label>
-            <select id="theme-selector">
+            <select id="theme-selector" aria-label="Select editor theme">
                 <option value="vs">Light</option>
                 <option value="vs-dark">Dark</option>
                 <option value="system" selected>System</option>
@@ -62,7 +62,7 @@
         </div>
         <div>
             <label for="font-size-selector">Font Size: </label>
-            <select id="font-size-selector">
+            <select id="font-size-selector" aria-label="Select font size">
                 <option value="14" selected>14</option>
                 <option value="15">15</option>
                 <option value="16">16</option>
@@ -72,23 +72,23 @@
                 <option value="20">20</option>
             </select>
         </div>
-        <div id="view-mode-group">
+        <div id="view-mode-group" role="group" aria-label="View mode selection">
             <span>View: </span>
             <label class="radio-label">
-                <input type="radio" name="view-mode" value="side-by-side" checked>
+                <input type="radio" name="view-mode" value="side-by-side" checked aria-label="Side by side view">
                 Side by Side
             </label>
             <label class="radio-label">
-                <input type="radio" name="view-mode" value="inline">
+                <input type="radio" name="view-mode" value="inline" aria-label="Inline view">
                 Inline
             </label>
         </div>
-        <button id="clear-session-btn" title="Clear saved session and reset to default">Clear Saved Session</button>
+        <button id="clear-session-btn" title="Clear saved session and reset to default" aria-label="Clear saved session and reset to default">Clear Saved Session</button>
     </div>
-    <div id="container"></div>
-    <div id="footer">
+    <div id="container" role="main" aria-label="Diff editor workspace"></div>
+    <div id="footer" role="contentinfo">
         <span>Powered by <a href="https://microsoft.github.io/monaco-editor/" target="_blank" rel="noopener noreferrer">Monaco Editor</a> from Microsoft</span>
-        <span>•</span>
+        <span aria-hidden="true">•</span>
         <span>All data is processed locally - nothing is collected or sent to any server</span>
     </div>
     <script type="module" src="/js/main.js"></script>
