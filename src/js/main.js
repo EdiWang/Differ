@@ -20,7 +20,7 @@ const elements = {
     themeSelector: null,
     fontSizeSelector: null,
     clearSessionBtn: null,
-    viewModeRadios: null,
+    viewModeToggle: null,
     loadingIndicator: null
 };
 
@@ -32,7 +32,7 @@ function cacheElements() {
     elements.themeSelector = document.getElementById('theme-selector');
     elements.fontSizeSelector = document.getElementById('font-size-selector');
     elements.clearSessionBtn = document.getElementById('clear-session-btn');
-    elements.viewModeRadios = document.querySelectorAll('input[name="view-mode"]');
+    elements.viewModeToggle = document.getElementById('view-mode-toggle');
     elements.loadingIndicator = document.getElementById('loading-indicator');
 }
 
@@ -70,8 +70,8 @@ function getCurrentTheme() {
  * @returns {string} Selected view mode or default
  */
 function getCurrentViewMode() {
-    const checkedRadio = document.querySelector('input[name="view-mode"]:checked');
-    return checkedRadio?.value ?? DEFAULT_VIEW_MODE;
+    const activeOption = elements.viewModeToggle?.querySelector('.toggle-option.active');
+    return activeOption?.dataset.value ?? DEFAULT_VIEW_MODE;
 }
 
 /**
@@ -134,11 +134,17 @@ function restoreSession(diffEditor, session) {
     
     // Restore view mode
     applyViewMode(diffEditor, viewMode);
-    const viewModeRadio = document.querySelector(
-        `input[name="view-mode"][value="${viewMode}"]`
-    );
-    if (viewModeRadio) {
-        viewModeRadio.checked = true;
+    if (elements.viewModeToggle) {
+        const toggleOptions = elements.viewModeToggle.querySelectorAll('.toggle-option');
+        toggleOptions.forEach(option => {
+            if (option.dataset.value === viewMode) {
+                option.classList.add('active');
+                option.setAttribute('aria-pressed', 'true');
+            } else {
+                option.classList.remove('active');
+                option.setAttribute('aria-pressed', 'false');
+            }
+        });
     }
 }
 
@@ -173,11 +179,18 @@ function resetToDefaults(diffEditor) {
         elements.fontSizeSelector.value = DEFAULT_FONT_SIZE.toString();
     }
     
-    const sideBySideRadio = document.querySelector(
-        'input[name="view-mode"][value="side-by-side"]'
-    );
-    if (sideBySideRadio) {
-        sideBySideRadio.checked = true;
+    // Reset view mode toggle
+    if (elements.viewModeToggle) {
+        const toggleOptions = elements.viewModeToggle.querySelectorAll('.toggle-option');
+        toggleOptions.forEach(option => {
+            if (option.dataset.value === DEFAULT_VIEW_MODE) {
+                option.classList.add('active');
+                option.setAttribute('aria-pressed', 'true');
+            } else {
+                option.classList.remove('active');
+                option.setAttribute('aria-pressed', 'false');
+            }
+        });
     }
     
     applyViewMode(diffEditor, DEFAULT_VIEW_MODE);
@@ -207,10 +220,13 @@ function setupEventListeners(diffEditor) {
     // Font size selector change
     elements.fontSizeSelector?.addEventListener('change', saveCurrentSession);
     
-    // View mode radio buttons change
-    elements.viewModeRadios.forEach(radio => {
-        radio.addEventListener('change', saveCurrentSession);
-    });
+    // View mode toggle buttons change
+    if (elements.viewModeToggle) {
+        const toggleOptions = elements.viewModeToggle.querySelectorAll('.toggle-option');
+        toggleOptions.forEach(option => {
+            option.addEventListener('click', saveCurrentSession);
+        });
+    }
     
     // Clear session button
     elements.clearSessionBtn?.addEventListener('click', () => {

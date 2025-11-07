@@ -14,27 +14,43 @@ function isValidViewMode(viewMode) {
 }
 
 /**
- * Sets up the view mode radio buttons to switch between side-by-side and inline diff views
+ * Sets up the view mode toggle buttons to switch between side-by-side and inline diff views
  * @param {monaco.editor.IStandaloneDiffEditor} diffEditor - The Monaco diff editor instance
  */
 export function setupViewModeSelector(diffEditor) {
-    const viewModeRadios = document.querySelectorAll('input[name="view-mode"]');
+    const viewModeToggle = document.getElementById('view-mode-toggle');
     
-    if (viewModeRadios.length === 0) {
-        console.error('View mode radio buttons not found');
+    if (!viewModeToggle) {
+        console.error('View mode toggle not found');
         return;
     }
 
-    viewModeRadios.forEach(radio => {
-        radio.addEventListener('change', (event) => {
-            if (event.target.checked) {
-                const viewMode = event.target.value;
+    const toggleOptions = viewModeToggle.querySelectorAll('.toggle-option');
+    
+    if (toggleOptions.length === 0) {
+        console.error('View mode toggle options not found');
+        return;
+    }
+
+    toggleOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            const viewMode = option.dataset.value;
+            
+            if (isValidViewMode(viewMode)) {
+                // Remove active class from all options
+                toggleOptions.forEach(opt => {
+                    opt.classList.remove('active');
+                    opt.setAttribute('aria-pressed', 'false');
+                });
                 
-                if (isValidViewMode(viewMode)) {
-                    applyViewMode(diffEditor, viewMode);
-                } else {
-                    console.error(`Invalid view mode: ${viewMode}`);
-                }
+                // Add active class to clicked option
+                option.classList.add('active');
+                option.setAttribute('aria-pressed', 'true');
+                
+                // Apply the view mode
+                applyViewMode(diffEditor, viewMode);
+            } else {
+                console.error(`Invalid view mode: ${viewMode}`);
             }
         });
     });

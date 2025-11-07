@@ -76,41 +76,56 @@
     color: var(--text-primary);
 }
 
-#view-mode-group {
+/* Toggle Switch for View Mode */
+#view-mode-toggle {
     display: flex;
     align-items: center;
-    gap: 10px;
-    color: var(--text-primary);
-    padding: 4px 8px;
+    gap: 0;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-small);
+    background-color: var(--bg-primary);
+    padding: 2px;
+    box-shadow: var(--shadow-sm);
 }
 
-    #view-mode-group .radio-label {
+    #view-mode-toggle .toggle-option {
         display: flex;
         align-items: center;
         gap: 6px;
-        cursor: pointer;
+        padding: 6px 12px;
         font-size: 14px;
+        font-family: 'Segoe UI', sans-serif;
         font-weight: 400;
-        transition: color 0.15s ease;
-        padding: 4px 8px;
+        background-color: transparent;
+        color: var(--text-secondary);
+        border: none;
         border-radius: var(--radius-small);
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        outline: none;
+        white-space: nowrap;
     }
 
-        #view-mode-group .radio-label svg {
+        #view-mode-toggle .toggle-option svg {
             vertical-align: middle;
             display: inline-block;
         }
 
-        #view-mode-group .radio-label:hover {
-            background-color: var(--bg-primary);
+        #view-mode-toggle .toggle-option:hover:not(.active) {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
         }
 
-    #view-mode-group input[type="radio"] {
-        cursor: pointer;
-        width: 16px;
-        height: 16px;
-        accent-color: var(--link-color);
-    }
+        #view-mode-toggle .toggle-option.active {
+            background-color: var(--link-color);
+            color: white;
+            font-weight: 500;
+            box-shadow: var(--shadow-sm);
+        }
+
+        #view-mode-toggle .toggle-option:focus {
+            box-shadow: 0 0 0 2px rgba(0, 103, 192, 0.3);
+        }
 
 #clear-session-btn {
     margin-left: auto;
